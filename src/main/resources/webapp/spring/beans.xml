@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+<context:property-placeholder location="classpath:/webapp/spring/db.properties"/>
+
+<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<property name="driverClassName" value="${oracle.className}"/>
+	<property name="url" value="${oracle.url}"/>
+	<property name="username" value="${oracle.user}"/>
+	<property name="password" value="${oracle.password}"/>
+</bean>
+
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<property name="dataSource" ref="dataSource"/>
+	<property name="mapperLocations">
+		<list>
+			<value>classpath:/webapp/dao/xml/DeptDao.xml</value>
+		</list>
+	</property>
+</bean>
+
+<bean id="deptDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	<property name="mapperInterface" value="webapp.dao.DeptDao"/>
+</bean>
+
+<!-- <bean id="deptDao" class="webapp.dao.impl.SpringJdbcDeptDao"> -->
+<!-- <property name="dataSource" ref="dataSource"/> -->
+<!-- </bean> -->
+
+<!-- <bean id="deptDao" class="webapp.dao.impl.JdbcDeptDao"> -->
+<!-- <property name="dataSource" ref="dataSource"/> -->
+<!-- </bean> -->
+	
+
+<bean id="deptInfoService" class="webapp.service.DeptInfoService">
+	<property name="dataSource" ref="dataSource"/>
+	<property name="deptDao" ref="deptDao"/>
+</bean>
+
+</beans>
